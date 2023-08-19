@@ -1,8 +1,10 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+//import { Inter } from 'next/font/google'
+import DefaultNavbar from './components/Navbar'
+import FlowbiteContext from './components/FlowbiteContext'
 
-const inter = Inter({ subsets: ['latin'] })
+//const inter = Inter({ subsets: ['latin'] }) // className={inter.className}
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,7 +18,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className="bg-gray-200 h-screen flex flex-col" >
+        <DefaultNavbar />
+        <FlowbiteContext>{children}</FlowbiteContext>
+      </body>
     </html>
   )
 }
