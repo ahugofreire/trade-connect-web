@@ -12,9 +12,9 @@ import {
 
 async function getOrders(wallet_id: string): Promise<Order[]>{
   const response = await fetch(
-    `http://localhost:8000/wallets/${wallet_id}/orders`, {
+    `http://trade-api:3333/wallets/${wallet_id}/orders`, {
       next: { tags: [`orders-wallet-${wallet_id}`],
-      revalidate: isHomeBrokerClosed() ? 60 * 60 : 5,
+      //revalidate: isHomeBrokerClosed() ? 60 * 60 : 5,
       },
     }
   );

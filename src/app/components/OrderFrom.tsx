@@ -23,7 +23,7 @@ async function initTransaction(formData: FormData) {
     }
   });
 
-  const res = await fetch(`http://localhost:8000/wallets/${wallet_id}/orders`, {
+  const res = await fetch(`http://trade-api:3333/wallets/${wallet_id}/orders`, {
     headers: {
       "Content-Type": "application/json"
     },
