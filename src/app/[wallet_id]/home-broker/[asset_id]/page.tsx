@@ -1,7 +1,9 @@
+import { AssetChartComponent } from "@/app/components/AssetChartComponent";
 import { ChartComponent } from "@/app/components/ChartComponents";
 import { TabGroup, TabItem, Card } from "@/app/components/Flowbite-components";
 import MyOrders from "@/app/components/MyOrdres";
 import { OrderForm } from "@/app/components/OrderFrom";
+import { SyncOrders } from "@/app/components/SyncOrdres";
 import { HiShoppingCart, HiArrowUp} from "@/app/components/react-icons/hi";
 
 export default async function HomeBrokerPage({
@@ -52,12 +54,16 @@ export default async function HomeBrokerPage({
                 }
               }}
             >
-              <MyOrders wallet_id={params.wallet_id} />
+              <SyncOrders wallet_id={params.wallet_id}>
+                <div className="max-h-96 overflow-y-auto overflow-hidden">
+                  <MyOrders wallet_id={params.wallet_id} />
+                </div>
+              </SyncOrders>
             </Card>
           </div>
         </div>
         <div className="col-span-3 flex flex-grow">
-          <ChartComponent header="ITSA4 - R$ 100" />
+          <AssetChartComponent asset_id={params.asset_id} />
         </div>
       </div>
     </main>

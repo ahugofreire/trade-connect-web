@@ -1,6 +1,6 @@
 'use client';
 
-import { WalletAsset } from "../models";
+import { Asset, WalletAsset } from "../models";
 import { fetcher } from "../utils";
 
 import {
@@ -12,16 +12,81 @@ import {
   TableRow,
 } from "../components/Flowbite-components";
 import Link from "next/link";
-import usrSWR from "swr";
+import useSWR from "swr";
+import useSWRSubscription, { SWRSubscriptionOptions } from "swr/subscription"
 
 export default function MyWallet(props: {wallet_id: string}) {
-  const {data: walletAssets, error} = usrSWR<WalletAsset[]>(
+  const {data: walletAssets, error, mutate: mutateWalletAssets} = useSWR<WalletAsset[]>(
     `http://localhost:3001/api/wallets/${props.wallet_id}/assets`,
     fetcher,
     {
       fallbackData: [],
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
+    }
+  );
+
+  const {data: assetsChanged } = useSWRSubscription(
+    `http://localhost:3333/assets/events`,
+    (path, { next }: SWRSubscriptionOptions<Asset, Error>) => {
+      const eventSource = new EventSource(path);
+
+      eventSource.addEventListener('asset-price-changed',async  (event) => {
+        const assetsChanged: Asset = JSON.parse(event.data);
+
+        await mutateWalletAssets((prev) => {
+          const foundIdex = prev!.findIndex(
+            (walletAsset ) =>
+              walletAsset.asset_id === assetsChanged.id
+          );
+
+          if (foundIdex !== -1) {
+            prev![foundIdex!].Asset.price = assetsChanged.price;
+          }
+
+          return [...prev!];
+        }, false);
+        next(null, assetsChanged);
+      });
+      eventSource.onerror = (error) => {
+        console.error(error);
+        eventSource.close();
+      };
+      return () => {
+        eventSource.close();
+      };
+    }
+  );
+
+  const {data: walletAssetsUpdated } = useSWRSubscription(
+    `http://localhost:3333/wallets/${props.wallet_id}/assets/events`,
+    (path, { next }: SWRSubscriptionOptions) => {
+      const eventSource = new EventSource(path);
+
+      eventSource.addEventListener('wallet-asset-updated',async  (event) => {
+        const walletAssetUpdated: WalletAsset = JSON.parse(event.data);
+
+        await mutateWalletAssets((prev) => {
+          const foundIdex = prev?.findIndex(
+            (walletAsset) =>
+              walletAsset.asset_id === walletAssetUpdated.asset_id
+          );
+          console.log(walletAssetUpdated)
+          if (foundIdex !== -1) {
+            prev![foundIdex!].shares = walletAssetUpdated.shares;
+          }
+
+          return [...prev!];
+        }, false);
+        next(null, walletAssetUpdated);
+      });
+      eventSource.onerror = (error) => {
+        console.error(error);
+        eventSource.close();
+      };
+      return () => {
+        eventSource.close();
+      };
     }
   );
 

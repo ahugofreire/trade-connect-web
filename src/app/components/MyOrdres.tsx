@@ -13,6 +13,7 @@ import {
 async function getOrders(wallet_id: string): Promise<Order[]>{
   const response = await fetch(
     `http://trade-api:3333/wallets/${wallet_id}/orders`, {
+      // cache: 'no-store', // Processamento sempre dinamico sem o cache no next
       next: { tags: [`orders-wallet-${wallet_id}`],
       //revalidate: isHomeBrokerClosed() ? 60 * 60 : 5,
       },
