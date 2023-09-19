@@ -1,5 +1,8 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Arch
+<img width="801" alt="Captura de Tela 2023-06-19 às 18 07 05" src="https://github.com/ahugofreire/trade-connect-web/assets/83099706/30be47d7-1fe9-4e66-aeab-5ed841d02e48">
+
 ## Getting Started
 
 First, run the development server:
